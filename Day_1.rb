@@ -22,7 +22,13 @@ puts count_distance
 
 # Part 2
 ##############################################
+similarity_score = 0
 
+list_1_locations = list_1.uniq
 
+list_1_locations.each do |unique_location|
+  similarity_score += unique_location * list_2.count(unique_location) 
+end
+puts similarity_score
 
 ##############################################
