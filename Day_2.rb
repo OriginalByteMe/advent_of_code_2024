@@ -1,4 +1,5 @@
 f = File.read("day_2_input.txt")
+
 def setup(file)
   reports = []
   file.each_line.with_index do |line, index|
@@ -7,6 +8,10 @@ def setup(file)
 
   return reports
 end
+
+reports = setup(f)
+
+## My solution to problem 1
 
 def problem_1(reports)
   safe_report_num = 0
@@ -49,8 +54,59 @@ def problem_1(reports)
   return safe_report_num
 end
 
-
-reports = setup(f)
-
 safe_reports = problem_1(reports)
 puts "Safe reports: ", safe_reports
+
+## My solution to problem 2
+
+def number_tolerance(array)
+  array[0...-1].each_with_index do |num, index|
+    number_difference = (array[index] - array[index + 1]).abs
+    if number_difference > 3 || number_difference < 1
+      return false
+    end
+  end
+  true
+end
+
+def is_sorted(array)
+  return false if !array.each_cons(2).all? { |a, b| a >= b } && !array.each_cons(2).all? { |a, b| a <= b }
+  return true
+end
+
+def is_report_safe(report)
+  if !is_sorted(report) || !number_tolerance(report)
+    return false
+  end
+  true
+end
+
+def problem_2(reports)
+  correct_count = 0
+  report_possibilities = []
+
+  # Create possibilities for each report
+  reports.each do |report|
+    possibilities = []
+    possibilities << report.dup
+    report.each_with_index do |number, index|
+      temp_report = report.dup
+      temp_report.delete_at(index)
+      possibilities << temp_report
+    end
+    report_possibilities << possibilities
+  end
+
+  report_possibilities.each do |possibilities|
+    if possibilities.any? { |possibility| is_report_safe(possibility) }
+      correct_count += 1
+    end
+  end
+
+  correct_count
+end
+
+
+
+safe_reports_with_exception = problem_2(reports)
+puts "Safe reports with exception: ", safe_reports_with_exception
